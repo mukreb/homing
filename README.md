@@ -1,8 +1,8 @@
-# Plan: Tesla Menubar App (macOS)
+# Plan: Homing — Tesla Menubar App (macOS)
 
 ## Context
 
-Greenfield hobby-project (repo `tesla-viewer`, branch `claude/plan-tesla-menubar-app-b9SlU`,
+Greenfield hobby-project (repo `homing`, branch `claude/plan-tesla-menubar-app-b9SlU`,
 alleen een README aanwezig). Doel: een macOS menubar-app die op één Mac, voor één
 gebruiker (EU, recent Tesla Model 3/Y/S/X), laat zien wat de auto doet — primair
 de ETA tot huis of een andere bestemming, en bij stilstand of er deuren/ramen/
@@ -54,7 +54,7 @@ flowchart LR
         SSE[Worker /stream<br/>SSE to app]
     end
 
-    subgraph App[Tesla Viewer App macOS]
+    subgraph App[Homing App macOS]
         TelClient[TelemetryClient<br/>SSE consumer]
         LiveCheck[LivenessPoller<br/>vehicles only]
         Refresh[ManualRefresh<br/>vehicle_data on click]
@@ -159,10 +159,10 @@ App-observers: `NSWorkspace.willSleepNotification` / `didWakeNotification`,
 ## Project-structuur (te creëren in Fase 1/2)
 
 ```
-TeslaViewer.xcodeproj
-TeslaViewer/
+Homing.xcodeproj
+Homing/
   App/
-    TeslaViewerApp.swift          # @main, MenuBarExtra
+    HomingApp.swift               # @main, MenuBarExtra
   Features/
     MenuBar/
       MenuBarLabelView.swift
@@ -200,7 +200,7 @@ TeslaViewer/
     Defaults.swift                  # @AppStorage keys
   Resources/
     Assets.xcassets                 # app-icon; menubar uses SF Symbols
-TeslaViewerTests/
+HomingTests/
   VehicleStateMachineTests.swift
   LocationClassifierTests.swift
   TelemetryDecodingTests.swift
@@ -244,7 +244,7 @@ cloudflare/
 ### Fase 2B — Tesla-integratie + telemetry-config (2–3 avonden)
 - Tesla partner-app registreren via developer.tesla.com (EU region), public key hosten via Cloudflare.
 - `Keychain.swift` + `TokenStore` (refresh + access + expiry + Worker shared secret).
-- `OAuthSheet` met `ASWebAuthenticationSession`, custom scheme `teslaviewer://oauth/callback`.
+- `OAuthSheet` met `ASWebAuthenticationSession`, custom scheme `homing://oauth/callback`.
 - `FleetAPIClient`: `GET /vehicles`, `GET /vehicle_data`, `POST .../fleet_telemetry_config_create`, token-refresh-on-401, retry/backoff.
 - `SetupViewModel`: na OAuth, push telemetry-config naar de auto met:
   - server URL = Cloudflare Worker `/telemetry`
@@ -276,23 +276,23 @@ cloudflare/
 ## Te raken / aan te maken bestanden (overzicht)
 
 Alles nieuw — geen bestaande code om aan te passen. Kritisch:
-- `TeslaViewer/App/TeslaViewerApp.swift` — entry point + `MenuBarExtra`.
-- `TeslaViewer/Domain/Services/FleetAPIClient.swift` — Fleet API specifics geconcentreerd.
-- `TeslaViewer/Domain/Services/TelemetryClient.swift` — SSE-stream van de Worker.
-- `TeslaViewer/Domain/Services/VehicleStateMachine.swift` — single source of truth voor label-keuze.
-- `TeslaViewer/Features/Setup/SetupViewModel.swift` — OAuth + telemetry-config push.
+- `Homing/App/HomingApp.swift` — entry point + `MenuBarExtra`.
+- `Homing/Domain/Services/FleetAPIClient.swift` — Fleet API specifics geconcentreerd.
+- `Homing/Domain/Services/TelemetryClient.swift` — SSE-stream van de Worker.
+- `Homing/Domain/Services/VehicleStateMachine.swift` — single source of truth voor label-keuze.
+- `Homing/Features/Setup/SetupViewModel.swift` — OAuth + telemetry-config push.
 - `cloudflare/worker/src/index.ts` — telemetry receiver + SSE.
 - `cloudflare/worker/src/durable_object.ts` — `VehicleStateDO`.
 - `cloudflare/pages/public/.well-known/appspecific/com.tesla.3p.public-key.pem` — public key host.
 
 ## Verificatie
 
-1. **Fase 1**: `xcodebuild -scheme TeslaViewer test` → unit tests voor `VehicleStateMachine` en `LocationClassifier` slagen. Run app; debug-picker → elke menubar-state visueel checken.
+1. **Fase 1**: `xcodebuild -scheme Homing test` → unit tests voor `VehicleStateMachine` en `LocationClassifier` slagen. Run app; debug-picker → elke menubar-state visueel checken.
 2. **Fase 2A**: `wrangler dev`, dan `curl -X POST <url>/telemetry --data-binary @fixture.bin` → SSE op `/stream` ontvangt event binnen 1 s. Deploy naar productie, `curl https://.../healthz` → 200.
 3. **Fase 2B**:
-   - OAuth: app starten zonder tokens → sheet opent → na Tesla-login token in Keychain (`security find-generic-password -s nl.<jou>.teslaviewer`).
+   - OAuth: app starten zonder tokens → sheet opent → na Tesla-login token in Keychain (`security find-generic-password -s nl.<jou>.homing`).
    - Telemetry-config: na Setup, `curl` Tesla's GET telemetry-config endpoint → response toont onze Worker URL.
-   - Wake-safety: zet auto handmatig in slaapstand, monitor `log stream --predicate 'subsystem == "nl.<jou>.teslaviewer"'` → géén `vehicle_data`-calls, alleen `vehicles` op liveness-cadans.
+   - Wake-safety: zet auto handmatig in slaapstand, monitor `log stream --predicate 'subsystem == "nl.<jou>.homing"'` → géén `vehicle_data`-calls, alleen `vehicles` op liveness-cadans.
    - Live: rijd korte rit; observeer telemetry-events binnenkomen via SSE; transitie offline → driving → parked.
 4. **Fase 3**: tijdens rit popover openen, kaart toont auto + bestemmings-pin + route polyline; ETA in header == menubar-label. Refresh-knop → 1 extra `vehicle_data`-call zichtbaar in log.
 5. **Fase 4**: log uit/in; clamshell → SSE pauzeert; open → SSE reconnect binnen 2 s.

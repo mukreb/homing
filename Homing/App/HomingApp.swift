@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct TeslaViewerApp: App {
+struct HomingApp: App {
     @StateObject private var viewModel: MenuBarLabelViewModel
 
     init() {

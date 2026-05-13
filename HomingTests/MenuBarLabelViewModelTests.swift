@@ -1,6 +1,6 @@
 import XCTest
 import CoreLocation
-@testable import TeslaViewer
+@testable import Homing
 
 @MainActor
 final class MenuBarLabelViewModelTests: XCTestCase {

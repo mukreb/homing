@@ -2,21 +2,21 @@
 import PackageDescription
 
 let package = Package(
-    name: "TeslaViewer",
+    name: "Homing",
     platforms: [.macOS(.v14)],
     products: [
-        .library(name: "TeslaViewer", targets: ["TeslaViewer"])
+        .library(name: "Homing", targets: ["Homing"])
     ],
     targets: [
         .target(
-            name: "TeslaViewer",
-            path: "TeslaViewer",
-            exclude: ["App/TeslaViewerApp.swift"]
+            name: "Homing",
+            path: "Homing",
+            exclude: ["App/HomingApp.swift"]
         ),
         .testTarget(
-            name: "TeslaViewerTests",
-            dependencies: ["TeslaViewer"],
-            path: "TeslaViewerTests"
+            name: "HomingTests",
+            dependencies: ["Homing"],
+            path: "HomingTests"
         )
     ]
 )

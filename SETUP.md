@@ -1,7 +1,7 @@
-# TeslaViewer — setup
+# Homing — setup
 
 Fase 1 uit `README.md`: skeleton + mock. Alle bronbestanden staan in
-`TeslaViewer/`; unit tests in `TeslaViewerTests/`.
+`Homing/`; unit tests in `HomingTests/`.
 
 ## Bouwen via Swift Package Manager (alleen core + tests)
 
@@ -12,7 +12,7 @@ swift build
 swift test
 ```
 
-Dit compileert alles behalve `App/TeslaViewerApp.swift` (de `@main`
+Dit compileert alles behalve `App/HomingApp.swift` (de `@main`
 `MenuBarExtra` entry point hoort in een echt app-target).
 
 ## Bouwen als menubar-app (Xcode-project)
@@ -22,25 +22,25 @@ bundle. Het Xcode-project staat (nog) niet in git omdat het op deze
 Linux-omgeving niet aangemaakt kan worden. Maak het zo aan:
 
 1. Open Xcode → **File → New → Project → macOS → App**.
-2. Product name: `TeslaViewer`. Interface: SwiftUI. Language: Swift.
+2. Product name: `Homing`. Interface: SwiftUI. Language: Swift.
    Minimum deployment: **macOS 14.0**. Bundle identifier: bv.
-   `nl.<jouw-handle>.teslaviewer`.
+   `nl.<jouw-handle>.homing`.
 3. Sla het project op in de root van deze repo (zodat
-   `TeslaViewer.xcodeproj` naast `TeslaViewer/` komt te staan).
+   `Homing.xcodeproj` naast `Homing/` komt te staan).
 4. In Xcode → het auto-aangemaakte `ContentView.swift` en
-   `TeslaViewerApp.swift` verwijderen.
-5. Sleep de bestaande mappen in `TeslaViewer/` (`App`, `Domain`,
+   `HomingApp.swift` verwijderen.
+5. Sleep de bestaande mappen in `Homing/` (`App`, `Domain`,
    `Features`, `Infra`, `Resources`) als group-references naar het
    target. Vink **Copy items if needed** uit.
-6. Voeg een Unit-test-target toe (`TeslaViewerTests`) en voeg de
-   bestanden uit `TeslaViewerTests/` toe.
+6. Voeg een Unit-test-target toe (`HomingTests`) en voeg de
+   bestanden uit `HomingTests/` toe.
 7. Build & run → menubar-icoon verschijnt; klik geeft de debug-picker
    met alle scenario's uit `MockTeslaClient.Scenario`.
 
 ## Verificatie Fase 1
 
-- `swift test` → `VehicleStateMachineTests` en `LocationClassifierTests`
-  slagen.
+- `swift test` → `VehicleStateMachineTests`, `LocationClassifierTests`
+  en `MenuBarLabelViewModelTests` slagen.
 - In Xcode: alle 9 cases van `MenuBarState` worden gerenderd in de
   `MenuBarLabelView` preview, en de debug-picker schakelt tussen
   scenario's.

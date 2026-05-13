@@ -27,7 +27,7 @@ struct MenuBarLabelView: View {
 
     private var accessibilityDescription: String {
         switch state {
-        case .notConfigured: return "Tesla Viewer not configured"
+        case .notConfigured: return "Homing not configured"
         case .drivingHome(let m): return "Driving home, \(m) minutes to arrival"
         case .drivingElsewhere(let m): return "Driving, \(m) minutes to arrival"
         case .parkedAllClosed: return "Parked, all closed"

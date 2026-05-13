@@ -1,6 +1,6 @@
 import XCTest
 import CoreLocation
-@testable import TeslaViewer
+@testable import Homing
 
 final class LocationClassifierTests: XCTestCase {
     let home = CLLocationCoordinate2D(latitude: 52.3676, longitude: 4.9041)
