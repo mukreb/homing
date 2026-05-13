@@ -1,0 +1,18 @@
+# Swift / SwiftPM
+.build/
+.swiftpm/
+Package.resolved
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+DerivedData/
+
+# macOS
+.DS_Store
+
+# Xcode user state
+*.xcuserstate
+xcshareddata/WorkspaceSettings.xcsettings
+
+# Node / Cloudflare worker (later)
+node_modules/
+.wrangler/
