@@ -33,7 +33,7 @@ struct DriveState: Equatable, Codable {
     )
 }
 
-extension CLLocationCoordinate2D: Codable, Equatable {
+extension CLLocationCoordinate2D: @retroactive Decodable, @retroactive Encodable, @retroactive Equatable {
     enum CodingKeys: String, CodingKey { case latitude, longitude }
 
     public init(from decoder: Decoder) throws {

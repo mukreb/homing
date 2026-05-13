@@ -11,7 +11,7 @@ let package = Package(
         .target(
             name: "TeslaViewer",
             path: "TeslaViewer",
-            exclude: ["App/TeslaViewerApp.swift", "Resources"]
+            exclude: ["App/TeslaViewerApp.swift"]
         ),
         .testTarget(
             name: "TeslaViewerTests",
