@@ -6,7 +6,7 @@ struct TeslaViewerApp: App {
 
     init() {
         let mock = MockTeslaClient(scenario: .parkedAllClosed)
-        _viewModel = StateObject(wrappedValue: MenuBarLabelViewModel(client: mock))
+        _viewModel = StateObject(wrappedValue: MenuBarLabelViewModel(client: mock, home: MockTeslaClient.home))
     }
 
     var body: some Scene {

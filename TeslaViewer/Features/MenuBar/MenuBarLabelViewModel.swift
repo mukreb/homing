@@ -26,14 +26,26 @@ final class MenuBarLabelViewModel: ObservableObject {
         recompute()
     }
 
+    func applyError(_ message: String) {
+        state = .error(message: message)
+    }
+
     func loadFromMock(scenario: MockTeslaClient.Scenario) async {
         guard let mock = client as? MockTeslaClient else { return }
         mock.scenario = scenario
-        if scenario == .notConfigured {
+        switch scenario {
+        case .notConfigured:
             apply(nil)
-            return
+        case .error:
+            do {
+                _ = try await mock.vehicleData(id: "mock")
+                apply(mock.snapshot(for: scenario))
+            } catch {
+                applyError(String(describing: error))
+            }
+        default:
+            apply(mock.snapshot(for: scenario))
         }
-        apply(mock.snapshot(for: scenario))
     }
 
     private func recompute() {

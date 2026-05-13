@@ -16,6 +16,10 @@ final class MockTeslaClient: TeslaClient {
         var id: String { rawValue }
     }
 
+    static let home = CLLocationCoordinate2D(latitude: 52.3676, longitude: 4.9041)
+    static let away = CLLocationCoordinate2D(latitude: 52.0907, longitude: 5.1214)
+    static let work = CLLocationCoordinate2D(latitude: 51.9244, longitude: 4.4777)
+
     var scenario: Scenario
 
     init(scenario: Scenario = .parkedAllClosed) {
@@ -37,7 +41,8 @@ final class MockTeslaClient: TeslaClient {
     }
 
     func vehicleData(id: String) async throws -> VehicleSnapshot {
-        snapshot(for: scenario)
+        if scenario == .error { throw TeslaClientError.server(status: 503) }
+        return snapshot(for: scenario)
     }
 
     func createTelemetryConfig(vin: String, workerURL: URL, sharedSecret: String) async throws {
@@ -45,9 +50,9 @@ final class MockTeslaClient: TeslaClient {
     }
 
     func snapshot(for scenario: Scenario) -> VehicleSnapshot {
-        let home = CLLocationCoordinate2D(latitude: 52.3676, longitude: 4.9041)
-        let away = CLLocationCoordinate2D(latitude: 52.0907, longitude: 5.1214)
-        let work = CLLocationCoordinate2D(latitude: 51.9244, longitude: 4.4777)
+        let home = Self.home
+        let away = Self.away
+        let work = Self.work
 
         var base = VehicleSnapshot.placeholder()
 
